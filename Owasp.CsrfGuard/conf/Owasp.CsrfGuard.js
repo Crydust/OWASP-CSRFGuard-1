@@ -101,31 +101,40 @@
     }
     // ie does not properly support prototype - wrap completely
     function hijackExplorer() {
-        var _XMLHttpRequest = window.XMLHttpRequest;
-        function alloc_XMLHttpRequest() {
-            this.base = _XMLHttpRequest ? new _XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
+        var RealXMLHttpRequest = window.XMLHttpRequest;
+        function FakeXMLHttpRequest() {
+            if (!(this instanceof FakeXMLHttpRequest)) {
+                return new FakeXMLHttpRequest();
+            } else {
+                this.base = this.createXHR();
+                // properties
+                this.status = 0;
+                this.statusText = "";
+                this.readyState = init_XMLHttpRequest.UNSENT;
+                this.responseText = "";
+                this.responseXML = null;
+                this.onsend = null;
+                this.url = null;
+                this.onreadystatechange = null;
+            }
         }
-        function init_XMLHttpRequest() {
-            return new alloc_XMLHttpRequest();
+        if (RealXMLHttpRequest){
+            FakeXMLHttpRequest.prototype.createXHR = function(){
+                return new RealXMLHttpRequest();
+            };
+        } else {
+            FakeXMLHttpRequest.prototype.createXHR = function(){
+                return new window.ActiveXObject("Microsoft.XMLHTTP");
+            };
         }
-        init_XMLHttpRequest.prototype = alloc_XMLHttpRequest.prototype;
         // constants
-        init_XMLHttpRequest.UNSENT = 0;
-        init_XMLHttpRequest.OPENED = 1;
-        init_XMLHttpRequest.HEADERS_RECEIVED = 2;
-        init_XMLHttpRequest.LOADING = 3;
-        init_XMLHttpRequest.DONE = 4;
-        // properties
-        init_XMLHttpRequest.prototype.status = 0;
-        init_XMLHttpRequest.prototype.statusText = "";
-        init_XMLHttpRequest.prototype.readyState = init_XMLHttpRequest.UNSENT;
-        init_XMLHttpRequest.prototype.responseText = "";
-        init_XMLHttpRequest.prototype.responseXML = null;
-        init_XMLHttpRequest.prototype.onsend = null;
-        init_XMLHttpRequest.url = null;
-        init_XMLHttpRequest.onreadystatechange = null;
+        FakeXMLHttpRequest.UNSENT = 0;
+        FakeXMLHttpRequest.OPENED = 1;
+        FakeXMLHttpRequest.HEADERS_RECEIVED = 2;
+        FakeXMLHttpRequest.LOADING = 3;
+        FakeXMLHttpRequest.DONE = 4;
         // methods
-        init_XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+        FakeXMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
             var self = this;
             this.url = url;
             this.base.onreadystatechange = function() {
@@ -150,26 +159,26 @@
             };
             this.base.open(method, url, async, user, pass);
         };
-        init_XMLHttpRequest.prototype.send = function(data) {
+        FakeXMLHttpRequest.prototype.send = function(data) {
             if (typeof this.onsend === "function") {
                 this.onsend.apply(this, arguments);
             }
             this.base.send(data);
         };
-        init_XMLHttpRequest.prototype.abort = function() {
+        FakeXMLHttpRequest.prototype.abort = function() {
             this.base.abort();
         };
-        init_XMLHttpRequest.prototype.getAllResponseHeaders = function() {
+        FakeXMLHttpRequest.prototype.getAllResponseHeaders = function() {
             return this.base.getAllResponseHeaders();
         };
-        init_XMLHttpRequest.prototype.getResponseHeader = function(name) {
+        FakeXMLHttpRequest.prototype.getResponseHeader = function(name) {
             return this.base.getResponseHeader(name);
         };
-        init_XMLHttpRequest.prototype.setRequestHeader = function(name, value) {
+        FakeXMLHttpRequest.prototype.setRequestHeader = function(name, value) {
             return this.base.setRequestHeader(name, value);
         };
         // hook
-        window.XMLHttpRequest = init_XMLHttpRequest;
+        window.XMLHttpRequest = FakeXMLHttpRequest;
     }
     // check if valid domain based on domainStrict
     function isValidDomain(current, target) {
