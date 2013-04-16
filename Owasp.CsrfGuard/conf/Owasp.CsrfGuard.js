@@ -374,7 +374,12 @@
                 }
                 // set name if missing here
                 name = name || "default_window_name";
-                return open.call(window, url, name, features);
+                if (open.call) {
+                    return open.call(window, url, name, features);
+                } else {
+                    //ie8
+                    return open(url, name, features);
+                }
             };
         }(window.open));
     }
