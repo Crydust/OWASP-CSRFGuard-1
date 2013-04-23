@@ -110,7 +110,7 @@
                 // properties
                 this.status = 0;
                 this.statusText = "";
-                this.readyState = init_XMLHttpRequest.UNSENT;
+                this.readyState = FakeXMLHttpRequest.UNSENT;
                 this.responseText = "";
                 this.responseXML = null;
                 this.onsend = null;
