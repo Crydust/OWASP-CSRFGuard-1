@@ -113,7 +113,7 @@
                 this.readyState = FakeXMLHttpRequest.UNSENT;
                 this.responseText = "";
                 this.responseXML = null;
-                this.onsend = null;
+                //this.onsend = null;
                 this.url = null;
                 this.onreadystatechange = null;
             }
@@ -208,7 +208,9 @@
             div.firstChild.href = url;
             div.innerHTML = "" + div.innerHTML;
             if (isMSIE) {
-                document.body.appendChild(div);
+                try {
+                    document.body.appendChild(div);
+                } catch (e) {}
             }
             var link = div.firstChild;
             var pathname = link.pathname;
@@ -233,7 +235,9 @@
             };
             link = null;
             if (isMSIE) {
-                document.body.removeChild(div);
+                try {
+                    document.body.removeChild(div);
+                } catch (e) {}
             }
             div = null;
             urlPartsCache[url] = result;
