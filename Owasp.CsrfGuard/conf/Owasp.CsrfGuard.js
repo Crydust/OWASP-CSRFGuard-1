@@ -86,17 +86,17 @@
     }
     // hook using standards based prototype
     function hijackStandard() {
-        XMLHttpRequest.prototype._open = XMLHttpRequest.prototype.open;
+        var originalOpen = XMLHttpRequest.prototype.open;
+        var originalSend = XMLHttpRequest.prototype.send;
         XMLHttpRequest.prototype.open = function(method, url) {
             this.url = url;
-            this._open.apply(this, arguments);
+            originalOpen.apply(this, arguments);
         };
-        XMLHttpRequest.prototype._send = XMLHttpRequest.prototype.send;
         XMLHttpRequest.prototype.send = function() {
             if (typeof this.onsend === "function") {
                 this.onsend.apply(this, arguments);
             }
-            this._send.apply(this, arguments);
+            originalSend.apply(this, arguments);
         };
     }
     // ie does not properly support prototype - wrap completely
