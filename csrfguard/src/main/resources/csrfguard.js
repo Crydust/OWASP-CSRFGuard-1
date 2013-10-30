@@ -265,7 +265,16 @@
     }
     // determine if uri/url points to valid domain
     function isValidUrl(src) {
-        return isValidDomain(document.domain, getUrlParts(src).hostname);
+        var result = false;
+        if (src.substring(0, 7) === "http://" || src.substring(0, 8) === "https://") {
+            return isValidDomain(document.domain, getUrlParts(src).hostname);
+        } else if (src.charAt(0) === '#') {
+            result = false;
+            /** ensure it is a local resource without a protocol **/
+        } else if (!startsWith(src, "//") && (src.charAt(0) === '/' || src.indexOf(':') === -1)) {
+            result = true;
+        }
+        return result;
     }
     // parse uri from url (as in request.getRequestURI())
     function parseUri(url) {
