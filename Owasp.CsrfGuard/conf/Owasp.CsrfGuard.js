@@ -202,6 +202,8 @@
         }
         if (!urlPartsCache.hasOwnProperty(url)) {
             var isMSIE = /MSIE \d+\.\d+;/.test(navigator.userAgent);
+            // msie 11 still seems to need special care here
+            isMSIE = isMSIE || (navigator.userAgent.indexOf("Trident/") != -1);
             isMSIE = isMSIE && !window.opera;
             var div = document.createElement("div");
             div.innerHTML = "<a></a>";
@@ -393,7 +395,9 @@
     if (isValidDomain(document.domain, "%DOMAIN_ORIGIN%")) {
         // optionally include Ajax support
         if ("%INJECT_XHR%" === "true") {
-            var isMSIE = (navigator.appName === "Microsoft Internet Explorer");
+            var isMSIE = /MSIE \d+\.\d+;/.test(navigator.userAgent);
+            // no need to detect msie 11 here
+            //isMSIE = isMSIE || (navigator.userAgent.indexOf("Trident/") != -1);
             isMSIE = isMSIE && !window.opera;
             if (isMSIE) {
                 hijackExplorer();
