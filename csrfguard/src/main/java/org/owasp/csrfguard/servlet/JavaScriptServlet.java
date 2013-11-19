@@ -241,10 +241,23 @@ public final class JavaScriptServlet extends HttpServlet {
 		String part = url.substring(index + token.length());
 		StringBuilder domain = new StringBuilder();
 
+		boolean isIPv6 = false;
 		for (int i = 0; i < part.length(); i++) {
 			char character = part.charAt(i);
 
-			if (character == '/' || character == ':') {
+			if (i == 0 && character == '[') {
+				isIPv6 = true;
+			}
+			
+			if (character == '/') {
+				break;
+			}
+			if (isIPv6) {
+				if (character == ']') {
+					domain.append(character);
+					break;
+				}
+			} else if (character == ':') {
 				break;
 			}
 
