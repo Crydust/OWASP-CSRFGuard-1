@@ -180,11 +180,21 @@
         // hook
         window.XMLHttpRequest = FakeXMLHttpRequest;
     }
+    // fix for problems with ipv6
+    function normalizeIPv6(hostname) {
+        if (typeof hostname !== "string") {
+            return hostname;
+        }
+        if (hostname.indexOf(":") !== -1 && !startsWith(hostname, "[")) {
+            return ["[", hostname, "]"].join("");
+        }
+        return hostname;
+    }
     // check if valid domain based on domainStrict
     function isValidDomain(current, target) {
         var result = false;
         // check exact or subdomain match
-        if (current === target) {
+        if (normalizeIPv6(current) === normalizeIPv6(target)) {
             result = true;
         } else if ("%DOMAIN_STRICT%" === "false") {
             if (startsWith(target, ".")) {
