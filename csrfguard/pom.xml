@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.owasp</groupId>
 	<artifactId>csrfguard</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.0-KN</version>
 	<packaging>jar</packaging>
 	<name>OWASP CSRFGuard</name>
 	<description>OWASP CSRFGuard is a library that implements a variant of the synchronizer token pattern to mitigate the risk of Cross-Site Request Forgery (CSRF) attacks.</description>
@@ -66,7 +66,7 @@
 					<verbose>true</verbose>
 				</configuration>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.4</version>
@@ -79,7 +79,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
