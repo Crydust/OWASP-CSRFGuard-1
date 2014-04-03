@@ -76,6 +76,61 @@
             obj["on" + type] = obj["e" + type + fn];
         }
     }
+    /**
+     * run before window.onload
+     * @see https://github.com/jfriend00/docReady
+     * @see http://stackoverflow.com/a/9899701/11451
+     */
+    var docReady = (function () {
+        var readyList = [];
+        var readyFired = false;
+        var readyEventHandlersInstalled = false;
+        function ready() {
+            if (!readyFired) {
+                readyFired = true;
+                for (var i = 0; i < readyList.length; i++) {
+                    readyList[i].fn.call(window, readyList[i].ctx);
+                }
+                readyList = [];
+            }
+        }
+        function readyStateChange() {
+            if (document.readyState === "complete") {
+                ready();
+            }
+        }
+        return function (callback, context) {
+            if (readyFired) {
+                window.setTimeout(function () {
+                    callback(context);
+                }, 1);
+                return;
+            } else {
+                readyList.push({
+                    fn: callback,
+                    ctx: context
+                });
+            }
+            if (document.readyState === "complete") {
+                window.setTimeout(ready, 1);
+            } else if (!readyEventHandlersInstalled) {
+                if (document.addEventListener) {
+                    document.addEventListener("DOMContentLoaded", ready, false);
+                    window.addEventListener("load", ready, false);
+                    // prevent memory leak in old ie
+                    EventCache.add(document, "DOMContentLoaded", ready);
+                    EventCache.add(window, "load", ready);
+                } else {
+                    document.attachEvent("onreadystatechange", readyStateChange);
+                    window.attachEvent("onload", ready);
+                    // prevent memory leak in old ie
+                    EventCache.add(document, "onreadystatechange", readyStateChange);
+                    EventCache.add(window, "load", ready);
+                }
+                readyEventHandlersInstalled = true;
+            }
+        };
+    }());
     // string utility functions
     function startsWith(str, prefix) {
         return str.indexOf(prefix) === 0;
@@ -432,7 +487,7 @@
         }
         // update nodes in DOM after load
         addEvent(window, "unload", EventCache.flush);
-        addEvent(window, "load", function() {
+        docReady(function() {
             injectTokens("%TOKEN_NAME%", "%TOKEN_VALUE%");
         });
     } else {
