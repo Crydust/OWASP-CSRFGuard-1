@@ -50,10 +50,6 @@ public final class RandomGenerator {
 		throw new CloneNotSupportedException();
 	}
 
-	public static String generateRandomId(String prng, String provider, int len) throws NoSuchAlgorithmException, NoSuchProviderException {
-		return generateRandomId(SecureRandom.getInstance(prng, provider), len);
-	}
-
 	public static String generateRandomId(SecureRandom sr, int len) {
 		StringBuilder sb = new StringBuilder();
 

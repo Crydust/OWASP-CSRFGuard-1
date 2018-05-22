@@ -77,23 +77,6 @@ public class CsrfGuardUtils {
 	}
 
 	/**
-	 * helper method for calling a method with no params (could be in
-	 * superclass)
-	 *
-	 * @param theClass
-	 *            the class which has the method
-	 * @param invokeOn
-	 *            to call on or null for static
-	 * @param methodName
-	 *            method name to call
-	 * @return the data
-	 */
-	public static Object callMethod(Class theClass, Object invokeOn,
-			String methodName) {
-		return callMethod(theClass, invokeOn, methodName, null, null);
-	}
-
-	/**
 	 * helper method for calling a method (could be in superclass)
 	 *
 	 * @param theClass
@@ -305,18 +288,6 @@ public class CsrfGuardUtils {
 	}
 
 	/**
-	 * See if the input is null or if string, if it is empty or blank (whitespace)
-	 * @param input the object being tested for blank
-	 * @return true if blank
-	 */
-	public static boolean isBlank(Object input) {
-		if (null == input) {
-			return true;
-		}
-		return (input instanceof String && isBlank((String)input));
-	}
-
-	/**
 	 * <p>Checks if a String is whitespace, empty ("") or null.</p>
 	 *
 	 * <pre>
@@ -469,19 +440,6 @@ public class CsrfGuardUtils {
 
 	/** pass this in the invokeOn to signify no params */
 	private static final Object NO_PARAMS = new Object();
-
-	/**
-	 * Safely invoke a reflection method that takes no args
-	 *
-	 * @param method
-	 *            to invoke
-	 * @param invokeOn the object on which to invoke the method
-	 * if NO_PARAMS then will not pass in params.
-	 * @return the result
-	 */
-	public static Object invokeMethod(Method method, Object invokeOn) {
-		return invokeMethod(method, invokeOn, NO_PARAMS);
-	}
 
 	/**
 	 * Safely invoke a reflection method
@@ -717,19 +675,6 @@ public class CsrfGuardUtils {
 	}
 
 	/**
-	 * If necessary, convert an object to another type.  if type is Object.class, just return the input.
-	 * Do not convert null to an empty primitive
-	 * @param <T> is template type
-	 * @param value the value object
-	 * @param theClass the class type
-	 * @return the object of that instance converted into something else
-	 */
-	public static <T> T typeCast(Object value, Class<T> theClass) {
-		//default behavior is not to convert null to empty primitive
-		return typeCast(value, theClass, false, false);
-	}
-
-	/**
 	 * If necessary, convert an object to another type.  if type is Object.class, just return the input
 	 * @param <T> is the type to return
 	 * @param value the value object
@@ -800,20 +745,6 @@ public class CsrfGuardUtils {
 	}
 
 	/**
-	 * close a connection null safe and don't throw exception
-	 * @param connection the connection to close
-	 */
-	public static void closeQuietly(Connection connection) {
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (Exception e) {
-				//ignore
-			}
-		}
-	}
-
-	/**
 	 * Unconditionally close an <code>InputStream</code>.
 	 * Equivalent to {@link InputStream#close()}, except any exceptions will be ignored.
 	 * @param input A (possibly null) InputStream
@@ -826,95 +757,6 @@ public class CsrfGuardUtils {
 		try {
 			input.close();
 		} catch (IOException ioe) {
-		}
-	}
-
-	/**
-	 * Unconditionally close an <code>OutputStream</code>.
-	 * Equivalent to {@link OutputStream#close()}, except any exceptions will be ignored.
-	 * @param output A (possibly null) OutputStream
-	 */
-	public static void closeQuietly(OutputStream output) {
-		if (output == null) {
-			return;
-		}
-
-		try {
-			output.close();
-		} catch (IOException ioe) {
-		}
-	}
-
-	/**
-	 * Unconditionally close an <code>Reader</code>.
-	 * Equivalent to {@link Reader#close()}, except any exceptions will be ignored.
-	 *
-	 * @param input A (possibly null) Reader to close
-	 */
-	public static void closeQuietly(Reader input) {
-		if (input == null) {
-			return;
-		}
-
-		try {
-			input.close();
-		} catch (IOException ioe) {
-		}
-	}
-
-	/**
-	 * close a resultSet null safe and dont throw exception
-	 * @param resultSet the result set to close
-	 */
-	public static void closeQuietly(ResultSet resultSet) {
-		if (resultSet != null) {
-			try {
-				resultSet.close();
-			} catch (Exception e) {
-				//ignore
-			}
-		}
-	}
-
-	/**
-	 * close a statement null safe and dont throw exception
-	 * @param statement the statement to close
-	 */
-	public static void closeQuietly(Statement statement) {
-		if (statement != null) {
-			try {
-				statement.close();
-			} catch (Exception e) {
-				//ignore
-			}
-		}
-	}
-
-	/**
-	 * close a writer quietly
-	 * @param writer the writer to close
-	 */
-	public static void closeQuietly(Writer writer) {
-		if (writer != null) {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				//swallow, its ok
-			}
-		}
-	}
-
-	/**
-	 * close a writer quietly
-	 * @param writer the xml stream writer to close
-	 */
-	public static void closeQuietly(XMLStreamWriter writer) {
-		if (writer != null) {
-			try {
-				writer.close();
-			} catch (XMLStreamException e) {
-				//swallow, its ok
-			}
 		}
 	}
 

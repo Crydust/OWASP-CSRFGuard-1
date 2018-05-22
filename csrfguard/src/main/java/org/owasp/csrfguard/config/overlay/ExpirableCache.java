@@ -130,69 +130,6 @@ public class ExpirableCache<K,V> implements Serializable {
   }
 
   /**
-   * unit of time for expirable cache
-   * @author mchyzer
-   *
-   */
-  public static enum ExpirableCacheUnit {
-    /** minutes */
-    MINUTE {
-
-      /** 
-       * @see ExpirableCacheUnit#defaultTimeToLiveMillis(int)
-       */
-      @Override
-      public long defaultTimeToLiveMillis(int input) {
-        return (long)input * 60 * 1000;
-      }
-    },
-    
-    /** seconds */
-    SECOND {
-
-      /** 
-       * @see ExpirableCacheUnit#defaultTimeToLiveMillis(int)
-       */
-      @Override
-      public long defaultTimeToLiveMillis(int input) {
-        return (long)input * 1000;
-      }
-    };
-    
-    /** 
-     * default time to live based on units
-     * @param input A number of units (seconds or minutes) before cache expires to be converted into milliseconds
-     * @return the millis
-     */
-    public abstract long defaultTimeToLiveMillis(int input);
-    
-  }
-  
-  /**
-   * @param defaultTimeToLive time in whatever unit is the default cache time to live for content
-   * @param expirableCacheUnit is minutes or seconds
-   */
-  public ExpirableCache(ExpirableCacheUnit expirableCacheUnit, int defaultTimeToLive) {
-    super();
-    if (defaultTimeToLive <= 0) {
-      throw new RuntimeException("Time to live in minutes must be greater than 0");
-    }
-    //make sure this is less than the max
-    long newTimeToLiveMillis = expirableCacheUnit.defaultTimeToLiveMillis(defaultTimeToLive);
-    if (newTimeToLiveMillis < MAX_TIME_TO_LIVE_MILLIS) {
-      this.defaultTimeToLiveInMillis = newTimeToLiveMillis;
-    }
-  }
-
-  /**
-   * expose the length of cache
-   * @return length of cache
-   */
-  public long getDefaultTimeToLiveInMillis() {
-    return this.defaultTimeToLiveInMillis;
-  }
-
-  /**
    * put a value into the cache, accept the default time to live for this cache
    * @param key key type
    * @param value value type
@@ -242,14 +179,7 @@ public class ExpirableCache<K,V> implements Serializable {
     this.cacheInserts++;
     globalCacheInserts++;
   }
-  
-  /**
-   * clear out all caches everywhere (session, request, context, etc)
-   */
-  public static void clearAll() {
-    lastClearStatic = System.currentTimeMillis();
-  }
-  
+
   /**
    * check and remove elements that are stale
    * @param onlyCheckIfNeeded true if only check every so often (e.g. every two minutes)
@@ -346,16 +276,6 @@ public class ExpirableCache<K,V> implements Serializable {
     return this.cacheInserts;
   }
 
-  
-  /**
-   * number of items evicted from cache
-   * @return Returns the cacheEvictions.
-   */
-  public int getCacheEvictions() {
-    return this.cacheEvictions;
-  }
-
-  
   /**
    * number of items successfully retrieved from cache
    * @return Returns the cacheHits.
@@ -375,13 +295,5 @@ public String toString() {
       + ", cacheHits: " + this.getCacheHits() + ", cacheInserts: " 
       + this.getCacheInserts() + ", cacheEvictions: " + this.cacheEvictions;
   }
-  
-  /**
-   * string representation of cache
-   * @return the string value
-   */
-  public static String staticToString() {
-    return "ExpirableCacheGlobal, cacheHits: " + globalCacheHits + ", cacheInserts: " 
-      + globalCacheInserts + ", cacheEvictions: " + globalCacheEvictions;
-  }
+
 }

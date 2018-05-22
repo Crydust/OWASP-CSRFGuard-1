@@ -270,10 +270,6 @@ public final class CsrfGuard {
 	public String getJavascriptTemplateCode() {
 		return config().getJavascriptTemplateCode();
 	}
-	
-	public String getTokenValue(HttpServletRequest request) {
-		return getTokenValue(request, request.getRequestURI());
-	}
 
 	public String getTokenValue(HttpServletRequest request, String uri) {
 		String tokenValue = null;
