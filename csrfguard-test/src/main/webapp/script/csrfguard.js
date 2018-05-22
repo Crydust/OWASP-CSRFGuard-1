@@ -190,7 +190,7 @@
 		/** check exact or subdomain match **/
 		if(current == target) {
 			result = true;
-		} else if(%DOMAIN_STRICT% == false) {
+		} else if('%DOMAIN_STRICT%' === 'false') {
 			if(target.charAt(0) == '.') {
 				result = endsWith(current, target);
 			} else {
@@ -331,7 +331,7 @@
 		/** obtain reference to page tokens if enabled **/
 		var pageTokens = {};
 		
-		if(%TOKENS_PER_PAGE% == true) {
+		if('%TOKENS_PER_PAGE%' === 'true') {
 			pageTokens = requestPageTokens();
 		}
 		
@@ -340,10 +340,10 @@
 		var len = all.length;
 
 		//these are read from the csrf guard config file(s)
-		var injectForms = %INJECT_FORMS%;
-		var injectGetForms = %INJECT_GET_FORMS%;
-		var injectFormAttributes = %INJECT_FORM_ATTRIBUTES%;
-		var injectAttributes = %INJECT_ATTRIBUTES%;
+		var injectForms = ('%INJECT_FORMS%' === 'true');
+		var injectGetForms = ('%INJECT_GET_FORMS%' === 'true');
+		var injectFormAttributes = ('%INJECT_FORM_ATTRIBUTES%' === 'true');
+		var injectAttributes = ('%INJECT_ATTRIBUTES%' === 'true');
 		
 		for(var i=0; i<len; i++) {
 			var element = all[i];
@@ -413,7 +413,7 @@
 	 */
 	if(isValidDomain(document.domain, "%DOMAIN_ORIGIN%")) {
 		/** optionally include Ajax support **/
-		if(%INJECT_XHR% == true) {
+		if('%INJECT_XHR%' === 'true') {
 			if(navigator.appName == "Microsoft Internet Explorer") {
 				hijackExplorer();
 			} else {
