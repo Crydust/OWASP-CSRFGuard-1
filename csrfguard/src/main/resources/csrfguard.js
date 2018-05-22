@@ -421,7 +421,6 @@
 			}
 		
 		var xhr = window.XMLHttpRequest ? new window.XMLHttpRequest : new window.ActiveXObject("Microsoft.XMLHTTP");
-		var csrfToken = {};
 		xhr.open("POST", "%SERVLET_PATH%", false);
 		xhr.setRequestHeader("FETCH-CSRF-TOKEN", "1");
 		xhr.send(null);
