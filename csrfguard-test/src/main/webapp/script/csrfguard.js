@@ -64,7 +64,7 @@
 	                if(item[0].removeEventListener){
 	                    item[0].removeEventListener(item[1], item[2], item[3]);
 	                }
-	                if(item[1].substring(0, 2) != "on"){
+	                if(item[1].substring(0, 2) !== "on"){
 	                    item[1] = "on" + item[1];
 	                }
 	                if(item[0].detachEvent){
@@ -188,10 +188,10 @@
 		var result = false;
 		
 		/** check exact or subdomain match **/
-		if(current == target) {
+		if(current === target) {
 			result = true;
 		} else if('%DOMAIN_STRICT%' === 'false') {
-			if(target.charAt(0) == '.') {
+			if(target.charAt(0) === '.') {
 				result = endsWith(current, target);
 			} else {
 				result = endsWith(current, '.' + target);
@@ -206,7 +206,7 @@
 		var result = false;
 		
 		/** parse out domain to make sure it points to our own **/
-		if(src.substring(0, 7) == "http://" || src.substring(0, 8) == "https://") {
+		if(src.substring(0, 7) === "http://" || src.substring(0, 8) === "https://") {
 			var token = "://";
 			var index = src.indexOf(token);
 			var part = src.substring(index + token.length);
@@ -216,7 +216,7 @@
 			for(var i=0; i<part.length; i++) {
 				var character = part.charAt(i);
 				
-				if(character == '/' || character == ':' || character == '#') {
+				if(character === '/' || character === ':' || character === '#') {
 					break;
 				} else {
 					domain += character;
@@ -225,10 +225,10 @@
 			
 			result = isValidDomain(document.domain, domain);
 			/** explicitly skip anchors **/
-		} else if(src.charAt(0) == '#') {
+		} else if(src.charAt(0) === '#') {
 			result = false;
 			/** ensure it is a local resource without a protocol **/
-		} else if(!startsWith(src, "//") && (src.charAt(0) == '/' || src.indexOf(':') == -1)) {
+		} else if(!startsWith(src, "//") && (src.charAt(0) === '/' || src.indexOf(':') === -1)) {
 			result = true;
 		}
 		
@@ -249,26 +249,26 @@
 		 */
 		if(index > 0) {
 			part = url.substring(index + token.length);
-		} else if(url.charAt(0) != '/') {
+		} else if(url.charAt(0) !== '/') {
 			part = "%CONTEXT_PATH%/" + url;
 		} else {
 			part = url;
 		}
 		
 		/** parse up to end or query string **/
-		var uriContext = (index == -1);
+		var uriContext = (index === -1);
 		
 		for(var i=0; i<part.length; i++) {
 			var character = part.charAt(i);
 			
-			if(character == '/') {
+			if(character === '/') {
 				uriContext = true;
-			} else if(uriContext == true && (character == '?' || character == '#')) {
+			} else if(uriContext === true && (character === '?' || character === '#')) {
 				uriContext = false;
 				break;
 			}
 			
-			if(uriContext == true) {
+			if(uriContext === true) {
 				uri += character;
 			}
 		}
@@ -282,26 +282,23 @@
 		if (!injectGetForms) {
 			var method = form.getAttribute("method");
 	  
-			if ((typeof method != 'undefined') && method != null && method.toLowerCase() == "get") {
+			if ((typeof method !== 'undefined') && method != null && method.toLowerCase() === "get") {
 				return;
 			}
 		}
 	  
-		var value = tokenValue;
 		var action = form.getAttribute("action");
 		
 		if(action != null && isValidUrl(action)) {
 			var uri = parseUri(action);
-			value = pageTokens[uri] != null ? pageTokens[uri] : tokenValue;
+			var hidden = document.createElement("input");
+			
+			hidden.setAttribute("type", "hidden");
+			hidden.setAttribute("name", tokenName);
+			hidden.setAttribute("value", (pageTokens[uri] != null ? pageTokens[uri] : tokenValue));
+			
+			form.appendChild(hidden);
 		}
-		
-		var hidden = document.createElement("input");
-		
-		hidden.setAttribute("type", "hidden");
-		hidden.setAttribute("name", tokenName);
-		hidden.setAttribute("value", value);
-		
-		form.appendChild(hidden);
 	}
 
 	/** inject tokens as query string parameters into url **/
@@ -312,7 +309,7 @@
 			var uri = parseUri(location);
 			var value = (pageTokens[uri] != null ? pageTokens[uri] : tokenValue);
 			
-			if(location.indexOf('?') != -1) {
+			if(location.indexOf('?') !== -1) {
 				location = location + '&' + tokenName + '=' + value;
 			} else {
 				location = location + '?' + tokenName + '=' + value;
@@ -349,12 +346,9 @@
 			var element = all[i];
 			
 			/** inject into form **/
-			if(element.tagName.toLowerCase() == "form") {
+			if(element.tagName.toLowerCase() === "form") {
 				if(injectForms) {
 					injectTokenForm(element, tokenName, tokenValue, pageTokens,injectGetForms);
-
-					/** adjust array length after addition of new element **/
-					len = all.length;
 				}
 				if (injectFormAttributes) {
 					injectTokenAttribute(element, "action", tokenName, tokenValue, pageTokens);
@@ -383,17 +377,17 @@
 		for(var i=0; i<text.length; i++) {
 			var character = text.charAt(i);
 			
-			if(character == ':') {
+			if(character === ':') {
 				nameContext = false;
-			} else if(character != ',') {
-				if(nameContext == true) {
+			} else if(character !== ',') {
+				if(nameContext === true) {
 					name += character;
 				} else {
 					value += character;
 				}
 			}
 			
-			if(character == ',' || (i + 1) >= text.length) {
+			if(character === ',' || (i + 1) >= text.length) {
 				pageTokens[name] = value;
 				name = "";
 				value = "";
@@ -414,7 +408,7 @@
 	if(isValidDomain(document.domain, "%DOMAIN_ORIGIN%")) {
 		/** optionally include Ajax support **/
 		if('%INJECT_XHR%' === 'true') {
-			if(navigator.appName == "Microsoft Internet Explorer") {
+			if(navigator.appName === "Microsoft Internet Explorer") {
 				hijackExplorer();
 			} else {
 				hijackStandard();
