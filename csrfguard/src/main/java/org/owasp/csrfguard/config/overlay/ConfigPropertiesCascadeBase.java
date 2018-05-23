@@ -779,16 +779,15 @@ public abstract class ConfigPropertiesCascadeBase {
 	}
 
 	/**
-	 * get the logger instance
-	 * @return the ilogger
+	 * make sure LOG is there, after things are initialized
+	 * @param logMessage Message to log
+	 * @param t Exception to log, or null
 	 */
-	private static ILogger iLogger() {
-		//endless loop
-		//CsrfGuard csrfGuard = CsrfGuard.getInstance();
-		//ILogger iLogger = csrfGuard == null ? null : csrfGuard.getLogger();
-		//return iLogger;
-		return null;
-
+	protected static void logDebug(String logMessage, Exception t) {
+		System.out.println("DEBUG: " + logMessage);
+		if (t != null) {
+			t.printStackTrace();
+		}
 	}
 
 	/**
@@ -797,14 +796,9 @@ public abstract class ConfigPropertiesCascadeBase {
 	 * @param t Exception to log, or null
 	 */
 	protected static void logInfo(String logMessage, Exception t) {
-		ILogger iLogger = iLogger();
-		if (iLogger != null) {
-			if (!ConfigPropertiesCascadeUtils.isBlank(logMessage)) {
-				iLogger.log(LogLevel.Info, logMessage);
-			}
-			if (t != null) {
-				iLogger.log(LogLevel.Info, t);
-			}
+		System.out.println("INFO: " + logMessage);
+		if (t != null) {
+			t.printStackTrace();
 		}
 	}
 
@@ -814,16 +808,8 @@ public abstract class ConfigPropertiesCascadeBase {
 	 * @param t Exception to log, or null
 	 */
 	protected static void logError(String logMessage, Exception t) {
-		ILogger iLogger = iLogger();
-		if (iLogger != null) {
-			if (!ConfigPropertiesCascadeUtils.isBlank(logMessage)) {
-				iLogger.log(LogLevel.Info, logMessage);
-			}
-			if (t != null) {
-				iLogger.log(LogLevel.Info, t);
-			}
-		} else {
-			System.err.println("ERROR: " + logMessage);
+		System.err.println("ERROR: " + logMessage);
+		if (t != null) {
 			t.printStackTrace();
 		}
 	}
@@ -894,10 +880,7 @@ public abstract class ConfigPropertiesCascadeBase {
 
 			return configObject;
 		} finally {
-			ILogger iLogger = iLogger();
-			if (iLogger != null) {
-				iLogger.log(LogLevel.Debug, ConfigPropertiesCascadeUtils.mapToString(debugMap));
-			}
+			logDebug(ConfigPropertiesCascadeUtils.mapToString(debugMap), null);
 		}
 	}
 
