@@ -432,7 +432,7 @@
 
 			XMLHttpRequest.prototype.onsend = function(data) {
 				if(isValidUrl(this.url)) {
-					this.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+					this.setRequestHeader("X-Requested-With", "%X_REQUESTED_WITH%");
 					this.setRequestHeader(token_name, token_value);
 				}
 			};
