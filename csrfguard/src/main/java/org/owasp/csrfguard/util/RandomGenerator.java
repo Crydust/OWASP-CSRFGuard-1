@@ -28,9 +28,7 @@
  */
 package org.owasp.csrfguard.util;
 
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.security.NoSuchAlgorithmException;
 
 public final class RandomGenerator {
 

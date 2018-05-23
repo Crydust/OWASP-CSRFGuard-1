@@ -41,10 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-import org.owasp.csrfguard.log.ILogger;
-import org.owasp.csrfguard.log.LogLevel;
 import org.owasp.csrfguard.util.CsrfGuardUtils;
 
 

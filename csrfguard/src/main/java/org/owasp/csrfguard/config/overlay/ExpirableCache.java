@@ -31,7 +31,6 @@ package org.owasp.csrfguard.config.overlay;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 

@@ -49,7 +49,6 @@ import org.owasp.csrfguard.action.IAction;
 import org.owasp.csrfguard.config.ConfigurationProvider;
 import org.owasp.csrfguard.config.ConfigurationProviderFactory;
 import org.owasp.csrfguard.config.NullConfigurationProvider;
-import org.owasp.csrfguard.config.PropertiesConfigurationProvider;
 import org.owasp.csrfguard.config.PropertiesConfigurationProviderFactory;
 import org.owasp.csrfguard.config.overlay.ExpirableCache;
 import org.owasp.csrfguard.log.ILogger;
