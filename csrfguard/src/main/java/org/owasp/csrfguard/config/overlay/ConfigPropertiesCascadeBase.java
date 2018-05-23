@@ -520,7 +520,7 @@ public abstract class ConfigPropertiesCascadeBase {
 				//if we didnt get there yet, lets look for a companion jar
 				Class<?> classInJar = configPropertiesCascadeBase.getClassInSiblingJar();
 				if (classInJar != null) {
-					File jarFile = classInJar == null ? null : ConfigPropertiesCascadeUtils.jarFile(classInJar);
+					File jarFile = ConfigPropertiesCascadeUtils.jarFile(classInJar);
 					File parentDir = jarFile == null ? null : jarFile.getParentFile();
 					String fileName = parentDir == null ? null 
 							: (ConfigPropertiesCascadeUtils.stripLastSlashIfExists(ConfigPropertiesCascadeUtils.fileCanonicalPath(parentDir)) + File.separator + configFileTypeConfig);
@@ -788,7 +788,7 @@ public abstract class ConfigPropertiesCascadeBase {
 		//ILogger iLogger = csrfGuard == null ? null : csrfGuard.getLogger();
 		//return iLogger;
 		return null;
-		
+
 	}
 
 	/**

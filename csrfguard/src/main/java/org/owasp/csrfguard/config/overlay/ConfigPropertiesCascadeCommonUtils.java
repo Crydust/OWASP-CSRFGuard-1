@@ -576,15 +576,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
     if (input instanceof Number) {
       return ((Number)input).intValue();
     }
-    if (false) {
-      if (input == null) {
-        return 0;
-      }
-      if (input instanceof String || isBlank((String)input)) {
-        return 0;
-      }
-    }
-    
+
     throw new RuntimeException("Cannot convert to int: " + className(input));
   }
 
