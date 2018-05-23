@@ -229,18 +229,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
     return isBlank(string) ? defaultStringIfBlank : string;
   }
 
-
-  /**
-   * convert a set to a string (comma separate)
-   * @param map the map to convert into a human-readable string
-   * @return the String
-   * @deprecated use mapToString(map)
-   */
-  @Deprecated
-  public static String MapToString(Map map) {
-    return mapToString(map);
-  }
-
   /**
    * convert a set to a string (comma separate)
    * @param map the map to convert into a human-readable string
