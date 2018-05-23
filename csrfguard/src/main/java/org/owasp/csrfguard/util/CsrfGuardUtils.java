@@ -267,6 +267,9 @@ public class CsrfGuardUtils {
 	 * @return true if success, false if not
 	 */
 	public static boolean injectInException(Throwable t, String message) {
+		if (t == null) {
+			return false;
+		}
 
 		//this is the field for sun java 1.5
 		String throwableFieldName = "detailMessage";
@@ -339,7 +342,10 @@ public class CsrfGuardUtils {
 			String fieldName, Object dataToAssign, boolean callOnSupers,
 			boolean overrideSecurity, boolean typeCast,
 			Class<? extends Annotation> annotationWithValueOverride) {
-		if (theClass == null && invokeOn != null) {
+		if (theClass == null && invokeOn == null) {
+			throw new NullPointerException("theClass and invokeOn can't both be null");
+		}
+		if (theClass == null) {
 			theClass = invokeOn.getClass();
 		}
 		Field field = field(theClass, fieldName, callOnSupers, true);
@@ -434,6 +440,9 @@ public class CsrfGuardUtils {
 	 */
 	public static void assignField(Object invokeOn, String fieldName,
 			Object dataToAssign) {
+		if (invokeOn == null) {
+			throw new NullPointerException("invokeOn can't be null");
+		}
 		assignField(null, invokeOn, fieldName, dataToAssign, true, true, true,
 				null);
 	}
@@ -508,6 +517,10 @@ public class CsrfGuardUtils {
 		StringBuffer result = new StringBuffer();
 
 		Iterator iterator = iterator(object);
+		if (iterator == null) {
+			return "";
+		}
+
 		int length = length(object);
 		for (int i = 0; i < length && i < 20; i++) {
 			result.append(className(next(object, iterator, i)));
@@ -617,6 +630,9 @@ public class CsrfGuardUtils {
 	 */
 	public static Field field(Class theClass, String fieldName,
 			boolean callOnSupers, boolean throwExceptionIfNotFound) {
+		if (theClass == null) {
+			throw new NullPointerException("theClass can't be null");
+		}
 		try {
 			Field field = theClass.getDeclaredField(fieldName);
 			// found it
@@ -839,7 +855,7 @@ public class CsrfGuardUtils {
 	      result.append(object.toString());
 	    }
 	  } catch (Exception e) {
-	    result.append("<<exception>> ").append(object.getClass()).append(":\n")
+	    result.append("<<exception>> ").append(object == null ? null : object.getClass()).append(":\n")
 	      .append(getFullStackTrace(e)).append("\n");
 	  }
 	}

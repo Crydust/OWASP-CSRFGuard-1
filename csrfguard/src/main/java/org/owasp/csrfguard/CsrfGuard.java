@@ -704,6 +704,10 @@ public final class CsrfGuard {
 	 */
 	private boolean isUriMatch(String testPath, String requestPath) {
 
+		if (testPath == null || requestPath == null) {
+			return false;
+		}
+
 		//case 4, if it is a regex
 		if (isTestPathRegex(testPath)) {
 			
@@ -765,7 +769,11 @@ public final class CsrfGuard {
 	}
 	
 	private boolean isUriExactMatch(String testPath, String requestPath) {
-		
+
+		if (testPath == null || requestPath == null) {
+			return false;
+		}
+
 		//cant be an exact match if this is a regex
 		if (isTestPathRegex(testPath)) {
 			return false;

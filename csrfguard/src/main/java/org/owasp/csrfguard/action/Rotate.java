@@ -38,6 +38,7 @@ import javax.servlet.http.HttpSession;
 
 import org.owasp.csrfguard.CsrfGuard;
 import org.owasp.csrfguard.CsrfGuardException;
+import org.owasp.csrfguard.log.LogLevel;
 import org.owasp.csrfguard.util.RandomGenerator;
 
 public class Rotate extends AbstractAction {
@@ -73,11 +74,14 @@ public class Rotate extends AbstractAction {
 	private void updatePageTokens(HttpSession session, CsrfGuard csrfGuard) throws CsrfGuardException {
 		@SuppressWarnings("unchecked")
 		Map<String, String> pageTokens = (Map<String, String>) session.getAttribute(CsrfGuard.PAGE_TOKENS_KEY);
-		List<String> pages = new ArrayList<String>();
 
-		if(pageTokens != null) {
-			pages.addAll(pageTokens.keySet());
+		if (pageTokens == null) {
+			CsrfGuard.getInstance().getLogger().log(LogLevel.Info, String.format("unable to rotate page tokens because attribute %s the could not be found on the session", CsrfGuard.PAGE_TOKENS_KEY));
+			return;
 		}
+
+		List<String> pages = new ArrayList<String>();
+		pages.addAll(pageTokens.keySet());
 
 		for (String page : pages) {
 			String token;
