@@ -58,7 +58,7 @@ import java.util.Set;
  * @param <V> value type
  */
 @SuppressWarnings("serial")
-public class ExpirableCache<K,V> implements Serializable {
+public class ExpirableCache<K extends Serializable, V extends Serializable> implements Serializable {
 
   /** max time to live in millis */
   static long MAX_TIME_TO_LIVE_MILLIS = 1000 * 60 * 60 * 24; //1 day
@@ -73,7 +73,7 @@ public class ExpirableCache<K,V> implements Serializable {
   long lastEvictionCheck = System.currentTimeMillis();
   
   /** cache map */
-  private Map<K,ExpirableValue<V>> cache = new HashMap<K,ExpirableValue<V>>();
+  private HashMap<K, ExpirableValue<V>> cache = new HashMap<K, ExpirableValue<V>>();
   
   /** number of elements inserted into the cache */
   private int cacheInserts = 0;
