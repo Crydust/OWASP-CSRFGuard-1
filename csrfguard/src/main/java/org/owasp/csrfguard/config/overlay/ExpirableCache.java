@@ -61,13 +61,13 @@ import java.util.Set;
 public class ExpirableCache<K extends Serializable, V extends Serializable> implements Serializable {
 
   /** max time to live in millis */
-  static long MAX_TIME_TO_LIVE_MILLIS = 1000 * 60 * 60 * 24; //1 day
+  static long MAX_TIME_TO_LIVE_MILLIS = 1000L * 60L * 60L * 24L; //1 day
 
   /** time to live for content (when not specified this is one day, and max one day) */
   long defaultTimeToLiveInMillis = MAX_TIME_TO_LIVE_MILLIS;
   
   /** time between looking for evictions in millis, default to two minutes */
-  static long TIME_BETWEEN_EVICTIONS_MILLIS = 2 * 60 * 1000;
+  static long TIME_BETWEEN_EVICTIONS_MILLIS = 2L * 60L * 1000L;
   
   /** last time the cache was checked for evictions */
   long lastEvictionCheck = System.currentTimeMillis();
@@ -94,7 +94,7 @@ public class ExpirableCache<K extends Serializable, V extends Serializable> impl
   private static int globalCacheEvictions = 0;
   
   /** when was the last clear of all */
-  private static long lastClearStatic = -1;
+  private static long lastClearStatic = -1L;
   
   /** when was the last clear of this instance */
   private long lastClear = System.currentTimeMillis();
