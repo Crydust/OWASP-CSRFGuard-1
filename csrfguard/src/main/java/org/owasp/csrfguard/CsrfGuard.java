@@ -49,7 +49,6 @@ import org.owasp.csrfguard.action.IAction;
 import org.owasp.csrfguard.config.ConfigurationProvider;
 import org.owasp.csrfguard.config.ConfigurationProviderFactory;
 import org.owasp.csrfguard.config.NullConfigurationProvider;
-import org.owasp.csrfguard.config.PropertiesConfigurationProvider;
 import org.owasp.csrfguard.config.PropertiesConfigurationProviderFactory;
 import org.owasp.csrfguard.config.overlay.ExpirableCache;
 import org.owasp.csrfguard.log.ILogger;
@@ -270,10 +269,6 @@ public final class CsrfGuard {
 	public String getJavascriptTemplateCode() {
 		return config().getJavascriptTemplateCode();
 	}
-	
-	public String getTokenValue(HttpServletRequest request) {
-		return getTokenValue(request, request.getRequestURI());
-	}
 
 	public String getTokenValue(HttpServletRequest request, String uri) {
 		String tokenValue = null;
@@ -390,7 +385,7 @@ public final class CsrfGuard {
 			/** create page specific token **/
 			if (isTokenPerPageEnabled()) {
 				@SuppressWarnings("unchecked")
-				Map<String, String> pageTokens = (Map<String, String>) session.getAttribute(CsrfGuard.PAGE_TOKENS_KEY);
+				HashMap<String, String> pageTokens = (HashMap<String, String>) session.getAttribute(CsrfGuard.PAGE_TOKENS_KEY);
 
 				/** first time initialization **/
 				if (pageTokens == null) {
@@ -708,6 +703,10 @@ public final class CsrfGuard {
 	 */
 	private boolean isUriMatch(String testPath, String requestPath) {
 
+		if (testPath == null || requestPath == null) {
+			return false;
+		}
+
 		//case 4, if it is a regex
 		if (isTestPathRegex(testPath)) {
 			
@@ -735,9 +734,8 @@ public final class CsrfGuard {
 		if (testPath.endsWith("/*")) {
 			if (testPath
 					.regionMatches(0, requestPath, 0, testPath.length() - 2)) {
-				if (requestPath.length() == (testPath.length() - 2)) {
-					retval = true;
-				} else if ('/' == requestPath.charAt(testPath.length() - 2)) {
+				if (requestPath.length() == (testPath.length() - 2)
+						|| '/' == requestPath.charAt(testPath.length() - 2)) {
 					retval = true;
 				}
 			}
@@ -770,7 +768,11 @@ public final class CsrfGuard {
 	}
 	
 	private boolean isUriExactMatch(String testPath, String requestPath) {
-		
+
+		if (testPath == null || requestPath == null) {
+			return false;
+		}
+
 		//cant be an exact match if this is a regex
 		if (isTestPathRegex(testPath)) {
 			return false;

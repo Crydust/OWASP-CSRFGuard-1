@@ -28,6 +28,7 @@
  */
 package org.owasp.csrfguard.config;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 import org.owasp.csrfguard.action.IAction;
 import org.owasp.csrfguard.log.ILogger;
 
-public interface ConfigurationProvider {
+public interface ConfigurationProvider extends Serializable {
 
 	/** @return true when this configuration provider can be cached for a minute, i.e. it is all setup */
 	boolean isCacheable();

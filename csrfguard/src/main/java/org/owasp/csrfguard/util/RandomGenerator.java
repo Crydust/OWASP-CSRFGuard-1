@@ -28,9 +28,7 @@
  */
 package org.owasp.csrfguard.util;
 
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.security.NoSuchAlgorithmException;
 
 public final class RandomGenerator {
 
@@ -48,10 +46,6 @@ public final class RandomGenerator {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
-	}
-
-	public static String generateRandomId(String prng, String provider, int len) throws NoSuchAlgorithmException, NoSuchProviderException {
-		return generateRandomId(SecureRandom.getInstance(prng, provider), len);
 	}
 
 	public static String generateRandomId(SecureRandom sr, int len) {

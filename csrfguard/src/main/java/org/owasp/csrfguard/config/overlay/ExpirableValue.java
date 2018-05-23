@@ -38,7 +38,7 @@ import java.io.Serializable;
  * @author mchyzer
  * @param <T> is the type of the underlying content
  */
-public class ExpirableValue<T> implements Serializable {
+public class ExpirableValue<T extends Serializable> implements Serializable {
 
   /** this is the time it was placed in the cache */
   private long timePlacedInCache = System.currentTimeMillis();

@@ -41,10 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-import org.owasp.csrfguard.log.ILogger;
-import org.owasp.csrfguard.log.LogLevel;
 import org.owasp.csrfguard.util.CsrfGuardUtils;
 
 
@@ -520,7 +517,7 @@ public abstract class ConfigPropertiesCascadeBase {
 				//if we didnt get there yet, lets look for a companion jar
 				Class<?> classInJar = configPropertiesCascadeBase.getClassInSiblingJar();
 				if (classInJar != null) {
-					File jarFile = classInJar == null ? null : ConfigPropertiesCascadeUtils.jarFile(classInJar);
+					File jarFile = ConfigPropertiesCascadeUtils.jarFile(classInJar);
 					File parentDir = jarFile == null ? null : jarFile.getParentFile();
 					String fileName = parentDir == null ? null 
 							: (ConfigPropertiesCascadeUtils.stripLastSlashIfExists(ConfigPropertiesCascadeUtils.fileCanonicalPath(parentDir)) + File.separator + configFileTypeConfig);
@@ -779,16 +776,15 @@ public abstract class ConfigPropertiesCascadeBase {
 	}
 
 	/**
-	 * get the logger instance
-	 * @return the ilogger
+	 * make sure LOG is there, after things are initialized
+	 * @param logMessage Message to log
+	 * @param t Exception to log, or null
 	 */
-	private static ILogger iLogger() {
-		//endless loop
-		//CsrfGuard csrfGuard = CsrfGuard.getInstance();
-		//ILogger iLogger = csrfGuard == null ? null : csrfGuard.getLogger();
-		//return iLogger;
-		return null;
-		
+	protected static void logDebug(String logMessage, Exception t) {
+		System.out.println("DEBUG: " + logMessage);
+		if (t != null) {
+			t.printStackTrace();
+		}
 	}
 
 	/**
@@ -797,14 +793,9 @@ public abstract class ConfigPropertiesCascadeBase {
 	 * @param t Exception to log, or null
 	 */
 	protected static void logInfo(String logMessage, Exception t) {
-		ILogger iLogger = iLogger();
-		if (iLogger != null) {
-			if (!ConfigPropertiesCascadeUtils.isBlank(logMessage)) {
-				iLogger.log(LogLevel.Info, logMessage);
-			}
-			if (t != null) {
-				iLogger.log(LogLevel.Info, t);
-			}
+		System.out.println("INFO: " + logMessage);
+		if (t != null) {
+			t.printStackTrace();
 		}
 	}
 
@@ -814,16 +805,8 @@ public abstract class ConfigPropertiesCascadeBase {
 	 * @param t Exception to log, or null
 	 */
 	protected static void logError(String logMessage, Exception t) {
-		ILogger iLogger = iLogger();
-		if (iLogger != null) {
-			if (!ConfigPropertiesCascadeUtils.isBlank(logMessage)) {
-				iLogger.log(LogLevel.Info, logMessage);
-			}
-			if (t != null) {
-				iLogger.log(LogLevel.Info, t);
-			}
-		} else {
-			System.err.println("ERROR: " + logMessage);
+		System.err.println("ERROR: " + logMessage);
+		if (t != null) {
 			t.printStackTrace();
 		}
 	}
@@ -894,10 +877,7 @@ public abstract class ConfigPropertiesCascadeBase {
 
 			return configObject;
 		} finally {
-			ILogger iLogger = iLogger();
-			if (iLogger != null) {
-				iLogger.log(LogLevel.Debug, ConfigPropertiesCascadeUtils.mapToString(debugMap));
-			}
+			logDebug(ConfigPropertiesCascadeUtils.mapToString(debugMap), null);
 		}
 	}
 
@@ -969,151 +949,6 @@ public abstract class ConfigPropertiesCascadeBase {
 	protected abstract String getMainExampleConfigClasspath();
 
 	/**
-	 * get a boolean and validate from csrf guard properties
-	 * @param key property key
-	 * @param defaultValue valud to use when key is missing
-	 * @return true when the property value represents an affirmative string such as {true, t, yes, y}
-	 */
-	public boolean propertyValueBoolean(String key, boolean defaultValue) {
-		return propertyValueBoolean(key, defaultValue, false);
-	}
-
-	/**
-	 * if the key is there, whether or not the value is blank
-	 * @param key property key
-	 * @return true or false
-	 */
-	public boolean containsKey(String key) {
-
-		return propertyValueString(key, null, false).isHasKey();
-
-	}
-
-	/**
-	 * get a boolean and validate from csrf guard properties or null if not there
-	 * @param key property key
-	 * @return the boolean or null
-	 */
-	public Boolean propertyValueBoolean(String key) {
-		return propertyValueBoolean(key, null, false);
-	}
-
-
-	/**
-	 * get a boolean pop and validate from the config file
-	 * @param key property key
-	 * @param defaultValue Used when no property value is found for the given key, when the 'required' option is not set
-	 * @param required Whether or not a value is required to be present
-	 * @return true when property value is string is one of {true, t, yes, y} and false when one of {false, f, no, n}
-	 */
-	protected Boolean propertyValueBoolean(String key, Boolean defaultValue, boolean required) {
-		String value = propertyValueString(key, null, false).getTheValue();
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && !required) {
-			return defaultValue;
-		}
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && required) {
-			throw new RuntimeException("Cant find boolean property " + key + " in properties file: " + this.getMainConfigClasspath() + ", it is required, expecting true or false");
-		}
-		if ("true".equalsIgnoreCase(value)) {
-			return true;
-		}
-		if ("false".equalsIgnoreCase(value)) {
-			return false;
-		}
-		if ("t".equalsIgnoreCase(value)) {
-			return true;
-		}
-		if ("f".equalsIgnoreCase(value)) {
-			return false;
-		}
-		if ("yes".equalsIgnoreCase(value)) {
-			return true;
-		}
-		if ("no".equalsIgnoreCase(value)) {
-			return false;
-		}
-		if ("y".equalsIgnoreCase(value)) {
-			return true;
-		}
-		if ("n".equalsIgnoreCase(value)) {
-			return false;
-		}
-		throw new RuntimeException("Invalid boolean value: '" + value + "' for property: " + key 
-				+ " in properties file: " + this.getMainConfigClasspath() + ", expecting true or false");
-
-	}
-
-	/**
-	 * get an int and validate from the config file
-	 * @param key property key
-	 * @param defaultValue Used when no property value is found for the given key, when the 'required' option is not set
-	 * @param required Whether or not a value is required to be present
-	 * @return the property value
-	 */
-	protected Integer propertyValueInt(String key, Integer defaultValue, boolean required) {
-		String value = propertyValueString(key, null, false).getTheValue();
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && !required) {
-			return defaultValue;
-		}
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && required) {
-			throw new RuntimeException("Cant find integer property " + key + " in config file: " + this.getMainConfigClasspath() + ", it is required");
-		}
-		try {
-			return ConfigPropertiesCascadeUtils.intValue(value);
-		} catch (Exception e) {
-
-		}
-		throw new RuntimeException("Invalid integer value: '" + value + "' for property: " 
-				+ key + " in config file: " + this.getMainConfigClasspath() + " in properties file");
-
-	}
-
-	/**
-	 * get a boolean and validate from csrf guard properties
-	 * @param key property key
-	 * @return the boolean property value 
-	 */
-	public boolean propertyValueBooleanRequired(String key) {
-
-		return propertyValueBoolean(key, false, true);
-
-	}
-
-	/**
-	 * get a boolean and validate from csrf guard properties
-	 * @param key property key
-	 * @return the integer property value 
-	 */
-	public int propertyValueIntRequired(String key) {
-
-		return propertyValueInt(key, -1, true);
-
-	}
-
-	/**
-	 * get a boolean and validate from csrf guard properties
-	 * @param key property key
-	 * @param defaultValue Used when key not found
-	 * @return the property value
-	 */
-	public int propertyValueInt(String key, int defaultValue ) {
-
-		return propertyValueInt(key, defaultValue, false);
-
-	}
-
-	/**
-	 * get a boolean and validate from csrf guard properties
-	 * @param key property key
-	 * @return the int or null if there
-	 */
-	public Integer propertyValueInt(String key ) {
-
-		return propertyValueInt(key, null, false);
-
-	}
-
-	/**
 	 * read properties from a resource, don't modify the properties returned since they are cached
 	 * @param resourceName Name of properties resource
 	 * @param exceptionIfNotExist When true, throw an exception if an URL for the resource name cannot be constructued
@@ -1158,118 +993,5 @@ public abstract class ConfigPropertiesCascadeBase {
 		}
 		return properties;
 	}
-
-	/**
-	 * make sure a value exists in properties
-	 * @param key property key
-	 * @return true if property exists with non-blank value, false otherwise
-	 */
-	public boolean assertPropertyValueRequired(String key) {
-		String value = propertyValueString(key);
-		if (!ConfigPropertiesCascadeUtils.isBlank(value)) {
-			return true;
-		}
-		String error = "Cant find property " + key + " in resource: " + this.getMainConfigClasspath() + ", it is required";
-		System.err.println("CSRF guard error: " + error);
-		ILogger iLogger = iLogger();
-		if (iLogger != null) {
-			iLogger.log(LogLevel.Error, error);
-		}
-		return false;
-	}
-
-	/**
-	 * make sure a value is boolean in properties
-	 * @param key property key
-	 * @param required whether or not the key is required to be present
-	 * @return true if ok, false if not
-	 */
-	public boolean assertPropertyValueBoolean(String key, boolean required) {
-
-		if (required && !assertPropertyValueRequired(key)) {
-			return false;
-		}
-
-		String value = propertyValueString(key);
-		//maybe ok not there
-		if (!required && ConfigPropertiesCascadeUtils.isBlank(value)) {
-			return true;
-		}
-		try {
-			ConfigPropertiesCascadeUtils.booleanValue(value);
-			return true;
-		} catch (Exception e) {
-
-		}
-		String error = "Expecting true or false property " + key + " in resource: " + this.getMainConfigClasspath() + ", but is '" + value + "'";
-		System.err.println("csrf guard error: " + error);
-		ILogger iLogger = iLogger();
-		if (iLogger != null) {
-			iLogger.log(LogLevel.Error, error);
-		}
-		return false;
-	}
-
-	/**
-	 * make sure a property is a class of a certain type
-	 * @param key property key
-	 * @param classType Desired class type
-	 * @param required Whether or not key must be present and have non-blank value
-	 * @return true if ok
-	 */
-	public boolean assertPropertyValueClass(
-			String key, Class<?> classType, boolean required) {
-
-		if (required && !assertPropertyValueRequired(key)) {
-			return false;
-		}
-		String value = propertyValueString(key);
-
-		//maybe ok not there
-		if (!required && ConfigPropertiesCascadeUtils.isBlank(value)) {
-			return true;
-		}
-
-		String extraError = "";
-		try {
-
-
-			Class<?> theClass = ConfigPropertiesCascadeUtils.forName(value);
-			if (classType.isAssignableFrom(theClass)) {
-				return true;
-			}
-			extraError = " does not derive from class: " + classType.getSimpleName();
-
-		} catch (Exception e) {
-			extraError = ", " + ConfigPropertiesCascadeUtils.getFullStackTrace(e);
-		}
-		String error = "Cant process property " + key + " in resource: " + this.getMainConfigClasspath() + ", the current" +
-				" value is '" + value + "', which should be of type: " 
-				+ classType.getName() + extraError;
-		System.err.println("csrf guard error: " + error);
-		ILogger iLogger = iLogger();
-		if (iLogger != null) {
-			iLogger.log(LogLevel.Error, error);
-		}
-		return false;
-	}
-
-	/**
-	 * find all keys/values with a certain pattern in a properties file.
-	 * return the keys.  if none, will return the empty set, not null set
-	 * @param pattern expression matched against property names
-	 * @return the matching keys.  if none, will return the empty set, not null set
-	 */
-	public Map<String, String> propertiesMap(Pattern pattern) {
-		Map<String, String> result = new LinkedHashMap<String, String>();
-		for (String key: propertyNames()) {
-			if (pattern.matcher(key).matches()) {
-				result.put(key, propertyValueString(key));
-			}
-		}
-
-		return result;
-	}
-
 
 }

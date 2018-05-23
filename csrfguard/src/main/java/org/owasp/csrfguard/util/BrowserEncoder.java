@@ -38,14 +38,18 @@ public final class BrowserEncoder {
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
-	
+
 	public static String encodeForHtml(String s) {
+		if (s == null) {
+			return "";
+		}
+
 		StringBuilder sb = new StringBuilder();
-		int len = (s == null ? -1 : s.length());
-		
+		int len = s.length();
+
 		for(int i=0; i<len; i++) {
 			char c = s.charAt(i);
-			
+
 			if(c == '&') {
 				sb.append("&amp;");
 			} else if(c == '<') {
@@ -62,13 +66,17 @@ public final class BrowserEncoder {
 				sb.append(c);
 			}
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	public static String encodeForAttribute(String s) {
+		if (s == null) {
+			return "";
+		}
+
 		StringBuilder sb = new StringBuilder();
-		int len = (s == null ? -1 : s.length());
+		int len = s.length();
 		
 		for(int i=0; i<len; i++) {
 			char c = s.charAt(i);
