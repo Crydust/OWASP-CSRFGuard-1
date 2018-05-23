@@ -41,7 +41,7 @@
 	    }
 	    else if (obj.attachEvent) {
 	        obj["e"+type+fn] = fn;
-	        obj[type+fn] = function() { obj["e"+type+fn]( window.event ); }
+	        obj[type+fn] = function() { obj["e"+type+fn]( window.event ); };
 	        obj.attachEvent( "on"+type, obj[type+fn] );
 	        EventCache.add(obj, type, fn);
 	    }
@@ -63,14 +63,14 @@
 	                item = listEvents[i];
 	                if(item[0].removeEventListener){
 	                    item[0].removeEventListener(item[1], item[2], item[3]);
-	                };
-	                if(item[1].substring(0, 2) != "on"){
+	                }
+	                if(item[1].substring(0, 2) !== "on"){
 	                    item[1] = "on" + item[1];
-	                };
+	                }
 	                if(item[0].detachEvent){
 	                    item[0].detachEvent(item[1], item[2]);
-	                };
-	            };
+	                }
+	            }
 	        }
 	    };
 	}();
@@ -150,7 +150,7 @@
 				if(self.onreadystatechange != null) {
 					self.onreadystatechange.apply(this, arguments);
 				}
-			}
+			};
 			
 			this.base.open(method, url, async, user, pass);
 		};
@@ -188,10 +188,10 @@
 		var result = false;
 		
 		/** check exact or subdomain match **/
-		if(current == target) {
+		if(current === target) {
 			result = true;
-		} else if(%DOMAIN_STRICT% == false) {
-			if(target.charAt(0) == '.') {
+		} else if('%DOMAIN_STRICT%' === 'false') {
+			if(target.charAt(0) === '.') {
 				result = endsWith(current, target);
 			} else {
 				result = endsWith(current, '.' + target);
@@ -206,7 +206,7 @@
 		var result = false;
 		
 		/** parse out domain to make sure it points to our own **/
-		if(src.substring(0, 7) == "http://" || src.substring(0, 8) == "https://") {
+		if(src.substring(0, 7) === "http://" || src.substring(0, 8) === "https://") {
 			var token = "://";
 			var index = src.indexOf(token);
 			var part = src.substring(index + token.length);
@@ -216,7 +216,7 @@
 			for(var i=0; i<part.length; i++) {
 				var character = part.charAt(i);
 				
-				if(character == '/' || character == ':' || character == '#') {
+				if(character === '/' || character === ':' || character === '#') {
 					break;
 				} else {
 					domain += character;
@@ -225,10 +225,10 @@
 			
 			result = isValidDomain(document.domain, domain);
 			/** explicitly skip anchors **/
-		} else if(src.charAt(0) == '#') {
+		} else if(src.charAt(0) === '#') {
 			result = false;
 			/** ensure it is a local resource without a protocol **/
-		} else if(!startsWith(src, "//") && (src.charAt(0) == '/' || src.indexOf(':') == -1)) {
+		} else if(!startsWith(src, "//") && (src.charAt(0) === '/' || src.indexOf(':') === -1)) {
 			result = true;
 		}
 		
@@ -249,26 +249,26 @@
 		 */
 		if(index > 0) {
 			part = url.substring(index + token.length);
-		} else if(url.charAt(0) != '/') {
+		} else if(url.charAt(0) !== '/') {
 			part = "%CONTEXT_PATH%/" + url;
 		} else {
 			part = url;
 		}
 		
 		/** parse up to end or query string **/
-		var uriContext = (index == -1);
+		var uriContext = (index === -1);
 		
 		for(var i=0; i<part.length; i++) {
 			var character = part.charAt(i);
 			
-			if(character == '/') {
+			if(character === '/') {
 				uriContext = true;
-			} else if(uriContext == true && (character == '?' || character == '#')) {
+			} else if(uriContext === true && (character === '?' || character === '#')) {
 				uriContext = false;
 				break;
 			}
 			
-			if(uriContext == true) {
+			if(uriContext === true) {
 				uri += character;
 			}
 		}
@@ -282,7 +282,7 @@
 		if (!injectGetForms) {
 			var method = form.getAttribute("method");
 	  
-			if ((typeof method != 'undefined') && method != null && method.toLowerCase() == "get") {
+			if ((typeof method !== 'undefined') && method != null && method.toLowerCase() === "get") {
 				return;
 			}
 		}
@@ -312,7 +312,7 @@
 			var uri = parseUri(location);
 			var value = (pageTokens[uri] != null ? pageTokens[uri] : tokenValue);
 			
-			if(location.indexOf('?') != -1) {
+			if(location.indexOf('?') !== -1) {
 				location = location + '&' + tokenName + '=' + value;
 			} else {
 				location = location + '?' + tokenName + '=' + value;
@@ -331,7 +331,7 @@
 		/** obtain reference to page tokens if enabled **/
 		var pageTokens = {};
 		
-		if(%TOKENS_PER_PAGE% == true) {
+		if('%TOKENS_PER_PAGE%' === 'true') {
 			pageTokens = requestPageTokens();
 		}
 		
@@ -340,16 +340,16 @@
 		var len = all.length;
 
 		//these are read from the csrf guard config file(s)
-		var injectForms = %INJECT_FORMS%;
-		var injectGetForms = %INJECT_GET_FORMS%;
-		var injectFormAttributes = %INJECT_FORM_ATTRIBUTES%;
-		var injectAttributes = %INJECT_ATTRIBUTES%;
+		var injectForms = ('%INJECT_FORMS%' === 'true');
+		var injectGetForms = ('%INJECT_GET_FORMS%' === 'true');
+		var injectFormAttributes = ('%INJECT_FORM_ATTRIBUTES%' === 'true');
+		var injectAttributes = ('%INJECT_ATTRIBUTES%' === 'true');
 		
 		for(var i=0; i<len; i++) {
 			var element = all[i];
 			
 			/** inject into form **/
-			if(element.tagName.toLowerCase() == "form") {
+			if(element.tagName.toLowerCase() === "form") {
 				if(injectForms) {
 					injectTokenForm(element, tokenName, tokenValue, pageTokens,injectGetForms);
 
@@ -383,17 +383,17 @@
 		for(var i=0; i<text.length; i++) {
 			var character = text.charAt(i);
 			
-			if(character == ':') {
+			if(character === ':') {
 				nameContext = false;
-			} else if(character != ',') {
-				if(nameContext == true) {
+			} else if(character !== ',') {
+				if(nameContext === true) {
 					name += character;
 				} else {
 					value += character;
 				}
 			}
 			
-			if(character == ',' || (i + 1) >= text.length) {
+			if(character === ',' || (i + 1) >= text.length) {
 				pageTokens[name] = value;
 				name = "";
 				value = "";
@@ -413,15 +413,14 @@
 	 */
 	if(isValidDomain(document.domain, "%DOMAIN_ORIGIN%")) {
 		/** optionally include Ajax support **/
-		if(%INJECT_XHR% == true) {
-			if(navigator.appName == "Microsoft Internet Explorer") {
+		if('%INJECT_XHR%' === 'true') {
+			if(navigator.appName === "Microsoft Internet Explorer") {
 				hijackExplorer();
 			} else {
 				hijackStandard();
 			}
 		
 		var xhr = window.XMLHttpRequest ? new window.XMLHttpRequest : new window.ActiveXObject("Microsoft.XMLHTTP");
-		var csrfToken = {};
 		xhr.open("POST", "%SERVLET_PATH%", false);
 		xhr.setRequestHeader("FETCH-CSRF-TOKEN", "1");
 		xhr.send(null);
@@ -433,7 +432,7 @@
 
 			XMLHttpRequest.prototype.onsend = function(data) {
 				if(isValidUrl(this.url)) {
-					this.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+					this.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 					this.setRequestHeader(token_name, token_value);
 				}
 			};
