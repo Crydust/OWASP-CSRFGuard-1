@@ -731,9 +731,8 @@ public final class CsrfGuard {
 		if (testPath.endsWith("/*")) {
 			if (testPath
 					.regionMatches(0, requestPath, 0, testPath.length() - 2)) {
-				if (requestPath.length() == (testPath.length() - 2)) {
-					retval = true;
-				} else if ('/' == requestPath.charAt(testPath.length() - 2)) {
+				if (requestPath.length() == (testPath.length() - 2)
+						|| '/' == requestPath.charAt(testPath.length() - 2)) {
 					retval = true;
 				}
 			}

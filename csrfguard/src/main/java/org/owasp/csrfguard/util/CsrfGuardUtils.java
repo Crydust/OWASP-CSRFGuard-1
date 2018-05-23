@@ -997,14 +997,12 @@ public class CsrfGuardUtils {
 	    if (throwable == null) {
 	        return false;
 	    }
-	
-	    if (throwable instanceof SQLException) {
-	        return true;
-	    } else if (throwable instanceof InvocationTargetException) {
-	        return true;
-	    } else if (isThrowableNested()) {
-	        return true;
-	    }
+
+		if (throwable instanceof SQLException
+				|| throwable instanceof InvocationTargetException
+				|| isThrowableNested()) {
+			return true;
+		}
 	
 	    Class cls = throwable.getClass();
 	    for (int i = 0, isize = CAUSE_METHOD_NAMES.length; i < isize; i++) {
