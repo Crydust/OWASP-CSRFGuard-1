@@ -386,7 +386,7 @@ public final class CsrfGuard {
 			/** create page specific token **/
 			if (isTokenPerPageEnabled()) {
 				@SuppressWarnings("unchecked")
-				Map<String, String> pageTokens = (Map<String, String>) session.getAttribute(CsrfGuard.PAGE_TOKENS_KEY);
+				HashMap<String, String> pageTokens = (HashMap<String, String>) session.getAttribute(CsrfGuard.PAGE_TOKENS_KEY);
 
 				/** first time initialization **/
 				if (pageTokens == null) {
